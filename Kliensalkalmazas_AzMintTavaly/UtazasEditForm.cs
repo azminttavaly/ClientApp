@@ -12,6 +12,7 @@ using Hotcakes.CommerceDTO.v1;
 using Hotcakes.CommerceDTO.v1.Catalog;
 using Hotcakes.CommerceDTO.v1.Client;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace Kliensalkalmazas_AzMintTavaly
 {
@@ -48,20 +49,21 @@ namespace Kliensalkalmazas_AzMintTavaly
         {
             try
             {
-                MessageBox.Show(tordelt[arIdx]);
                 tordelt[arIdx] = "SitePrice\":" + ar_numericUpDown.Value.ToString();
-                tordelt[nevIdx] = "ProductName\":" + nev_TextBox.Text;
-                tordelt[urlSlugIdx] = "UrlSlug\":" + URLSlug_TextBox.Text;
-                tordelt[leirasIdx] = "LongDescription\":" + leiras_textBox.Text;
+                tordelt[nevIdx] = "ProductName\":\"" + nev_TextBox.Text+"\"";
+                tordelt[urlSlugIdx] = "UrlSlug\":\"" + URLSlug_TextBox.Text+"\"";
+                tordelt[leirasIdx] = "LongDescription\":\"" + leiras_textBox.Text + "\"";
                 if (kep_Valtozik)
                 {
-                    tordelt[smallKepIdx] = "ImageFileSmall\":" + keput_TextBox.Text.Split('\\').Last();
-                    tordelt[medKepIdx] = "ImageFileMedium\":" + keput_TextBox.Text.Split('\\').Last();
+                    tordelt[smallKepIdx] = "ImageFileSmall\":\"" + keput_TextBox.Text.Split('\\').Last()+"\"";
+                    tordelt[medKepIdx] = "ImageFileMedium\":\"" + keput_TextBox.Text.Split('\\').Last() + "\"";
+                    File.Copy(keput, "Kl")
                 }
                 string uj_JSON = String.Join(",\"", tordelt);
                 ProductDTO frissTermek = JsonConvert.DeserializeObject<ProductDTO>(uj_JSON);
                 Form1.jelenlegiTermek = frissTermek;
-                return;
+
+                this.Close();
             }
             catch (Exception ex)
             {

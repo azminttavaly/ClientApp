@@ -31,11 +31,15 @@ namespace Kliensalkalmazas_AzMintTavaly
 
             Api proxy = new Api(url, key);
             Globalproxy = proxy;
-            ApiResponse<List<ProductDTO>> response = proxy.ProductsFindAll();
+            
+            UtazasListaz();
+
+        }
+
+        private void UtazasListaz()
+        {
+            ApiResponse<List<ProductDTO>> response = Globalproxy.ProductsFindAll();
             result = response.Content;
-
-
-
             for (int i = 0; i < result.Count; i++)
             {
 
@@ -44,25 +48,31 @@ namespace Kliensalkalmazas_AzMintTavaly
                 utazasokDGV.Rows.Add(result[i].ProductName, ár);
 
             }
-
-
         }
-
 
         private void utazasokDGV_MouseClick(object sender, MouseEventArgs e)
         {
             UtazasEditForm UEF = new UtazasEditForm(result[utazasokDGV.SelectedCells[0].RowIndex]);
             UEF.ShowDialog();
-            try
+            if (jelenlegiTermek != null)
             {
-                ApiResponse<ProductDTO> prodUpdateResponse = Globalproxy.ProductsUpdate(jelenlegiTermek);
-            }
-            catch (Exception ex)
-            {
+                try
+                {
+                    ApiResponse<ProductDTO> prodUpdateResponse = Globalproxy.ProductsUpdate(jelenlegiTermek);
+                }
+                catch (Exception ex)
+                {
 
-                MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message);
+                }
+
             }
             
+
+            utazasokDGV.Rows.Clear();
+            utazasokDGV.Refresh();
+            UtazasListaz();
+
         }
     }
 }
