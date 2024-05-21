@@ -22,6 +22,7 @@ namespace Kliensalkalmazas_AzMintTavaly
         string OG_JSON;
         string[] tordelt;
         string keput;
+        string bvin;
         bool kep_Valtozik;
 
         private void kepvalaszto_button_Click(object sender, EventArgs e)
@@ -55,9 +56,26 @@ namespace Kliensalkalmazas_AzMintTavaly
                 tordelt[leirasIdx] = "LongDescription\":\"" + leiras_textBox.Text + "\"";
                 if (kep_Valtozik)
                 {
-                    tordelt[smallKepIdx] = "ImageFileSmall\":\"" + keput_TextBox.Text.Split('\\').Last()+"\"";
-                    tordelt[medKepIdx] = "ImageFileMedium\":\"" + keput_TextBox.Text.Split('\\').Last() + "\"";
-                    File.Copy(keput, "Kl")
+                    string kepFajlNev = keput_TextBox.Text.Split('\\').Last();
+                    tordelt[smallKepIdx] = "ImageFileSmall\":\"" + kepFajlNev +"\"";
+                    tordelt[medKepIdx] = "ImageFileMedium\":\"" + kepFajlNev + "\"";
+
+                    DirectoryInfo d = new DirectoryInfo("..\\..\\Kuldendo_kepek\\");
+
+                    FileInfo[] Files = d.GetFiles();
+
+
+                    foreach (FileInfo file in Files)
+                    {
+                        if (file.Name.Contains(bvin.ToUpper()))
+                        {
+                            File.Delete(file.FullName);
+                        }
+                    }
+
+                    string[] tordelt2 = kepFajlNev.Split('.');
+                    string ujkepnev = kepFajlNev.Replace('.' + tordelt2.Last(),"") + ";" + bvin.ToUpper() + '.'+tordelt2.Last();
+                    File.Copy(keput, "..\\..\\Kuldendo_kepek\\" + ujkepnev);
                 }
                 string uj_JSON = String.Join(",\"", tordelt);
                 ProductDTO frissTermek = JsonConvert.DeserializeObject<ProductDTO>(uj_JSON);
@@ -121,6 +139,11 @@ namespace Kliensalkalmazas_AzMintTavaly
                 if (tordelt[i].Contains("ImageFileMedium\":"))
                 {
                     medKepIdx = i;
+                }
+
+                if (tordelt[i].Contains("Bvin\":"))
+                {
+                    bvin = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
                 }
 
             }
