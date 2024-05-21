@@ -17,8 +17,59 @@ namespace Kliensalkalmazas_AzMintTavaly
 {
     public partial class UtazasEditForm : Form
     {
-        int eredetiar;
-        string leiras, sku, nev;
+        int arIdx, nevIdx, urlSlugIdx, leirasIdx, smallKepIdx, medKepIdx;
+        string OG_JSON;
+        string[] tordelt;
+        string keput;
+        bool kep_Valtozik;
+
+        private void kepvalaszto_button_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Image Files (*.jpg),(*.jpeg),(*.png)|*.jpg;*.jpeg;*.png";
+            ofd.Multiselect = false;
+            kep_Valtozik = ofd.ShowDialog() == DialogResult.OK;
+            keput = ofd.FileName;
+            keput_TextBox.Text = keput;
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void keput_TextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void save_button_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MessageBox.Show(tordelt[arIdx]);
+                tordelt[arIdx] = "SitePrice\":" + ar_numericUpDown.Value.ToString();
+                tordelt[nevIdx] = "ProductName\":" + nev_TextBox.Text;
+                tordelt[urlSlugIdx] = "UrlSlug\":" + URLSlug_TextBox.Text;
+                tordelt[leirasIdx] = "LongDescription\":" + leiras_textBox.Text;
+                if (kep_Valtozik)
+                {
+                    tordelt[smallKepIdx] = "ImageFileSmall\":" + keput_TextBox.Text.Split('\\').Last();
+                    tordelt[medKepIdx] = "ImageFileMedium\":" + keput_TextBox.Text.Split('\\').Last();
+                }
+                string uj_JSON = String.Join(",\"", tordelt);
+                ProductDTO frissTermek = JsonConvert.DeserializeObject<ProductDTO>(uj_JSON);
+                Form1.jelenlegiTermek = frissTermek;
+                return;
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         public UtazasEditForm()
         {
             InitializeComponent();
@@ -28,37 +79,50 @@ namespace Kliensalkalmazas_AzMintTavaly
         public UtazasEditForm(ProductDTO termek)
         {
             InitializeComponent();
-            string OG_JSON = JsonConvert.SerializeObject(termek);
-            string[] tordelt = OG_JSON.Split(',');
+            OG_JSON = JsonConvert.SerializeObject(termek);
+            string JSON2 = OG_JSON.Replace(",\"", "␟");
+            tordelt = JSON2.Split('␟');
+            
             for (int i = 0; i < tordelt.Length; i++)
             {
 
-                if (tordelt[i].Contains("\"SitePrice\":"))
+                if (tordelt[i].Contains("SitePrice\":"))
                 {
-                    //MessageBox.Show(tordelt[i].Split(':')[1].Split('.')[0]);
                     ar_numericUpDown.Value = Convert.ToInt32(tordelt[i].Split(':')[1].Split('.')[0].Trim());
-                    //tordelt[i] = "\"SitePrice\":542000";
+                    arIdx = i;
                 }
 
-                if (tordelt[i].Contains("\"ProductName\":"))
+                if (tordelt[i].Contains("ProductName\":"))
                 {
-                    nev_TextBox.Text =tordelt[i].Split(':')[1];
+                    nev_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':',"").Replace("\"", "");
+                    nevIdx = i;
                 }
 
-                if (tordelt[i].Contains("\"UrlSlug\":"))
+                if (tordelt[i].Contains("UrlSlug\":"))
                 {
-                    URLSlug_TextBox.Text = tordelt[i].Split(':')[1];
+                    URLSlug_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
+                    urlSlugIdx = i;
                 }
 
-                if (tordelt[i].Contains("\"LongDescription\":"))
+                if (tordelt[i].Contains("LongDescription\":"))
                 {
-                    leiras_listBox.Text = tordelt[i].Split(':')[1];
+                    leiras_textBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
+                    leirasIdx = i;
                 }
+
+                if (tordelt[i].Contains("ImageFileSmall\":"))
+                {
+                    keput_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
+                    smallKepIdx = i;
+                }
+
+                if (tordelt[i].Contains("ImageFileMedium\":"))
+                {
+                    medKepIdx = i;
+                }
+
             }
-            string uj_JSON = String.Join(",", tordelt);
-            ProductDTO frissTermek = JsonConvert.DeserializeObject<ProductDTO>(uj_JSON);
-            Form1.aktualisTermek = frissTermek;
-            return;
+
         }
     }
 }

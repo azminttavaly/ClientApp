@@ -16,7 +16,7 @@ namespace Kliensalkalmazas_AzMintTavaly
 {
     public partial class Form1 : Form
     {
-        public static ProductDTO aktualisTermek;
+        public static ProductDTO jelenlegiTermek;
         public static List<ProductDTO> result;
         public static Api Globalproxy;
 
@@ -53,7 +53,16 @@ namespace Kliensalkalmazas_AzMintTavaly
         {
             UtazasEditForm UEF = new UtazasEditForm(result[utazasokDGV.SelectedCells[0].RowIndex]);
             UEF.ShowDialog();
-            ApiResponse<ProductDTO> prodUpdateResponse = Globalproxy.ProductsUpdate(aktualisTermek);
+            try
+            {
+                ApiResponse<ProductDTO> prodUpdateResponse = Globalproxy.ProductsUpdate(jelenlegiTermek);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+            
         }
     }
 }
