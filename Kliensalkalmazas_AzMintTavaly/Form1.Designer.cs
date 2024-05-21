@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.utazasokDGV = new System.Windows.Forms.DataGridView();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.Név = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Ár = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Kep = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.utazasokDGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -48,14 +48,7 @@
             this.utazasokDGV.Name = "utazasokDGV";
             this.utazasokDGV.Size = new System.Drawing.Size(586, 368);
             this.utazasokDGV.TabIndex = 0;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(672, 65);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 108);
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
+            this.utazasokDGV.MouseClick += new System.Windows.Forms.MouseEventHandler(this.utazasokDGV_MouseClick);
             // 
             // Név
             // 
@@ -72,6 +65,14 @@
             // 
             this.Kep.HeaderText = "Kep";
             this.Kep.Name = "Kep";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(672, 65);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 108);
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
             // 
             // Form1
             // 
