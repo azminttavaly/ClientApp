@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Hotcakes.Commerce.Catalog;
 using Hotcakes.CommerceDTO;
 using Hotcakes.CommerceDTO.v1;
 using Hotcakes.CommerceDTO.v1.Catalog;
@@ -19,6 +21,9 @@ namespace Kliensalkalmazas_AzMintTavaly
         public static ProductDTO jelenlegiTermek;
         public static List<ProductDTO> result;
         public static Api Globalproxy;
+        public static string kepFajlNev;
+        public static string keput;
+        string bvin;
 
         public Form1()
         {
@@ -38,6 +43,9 @@ namespace Kliensalkalmazas_AzMintTavaly
 
         private void UtazasListaz()
         {
+            utazasokDGV.Rows.Clear();
+            utazasokDGV.Refresh();
+
             ApiResponse<List<ProductDTO>> response = Globalproxy.ProductsFindAll();
             result = response.Content;
             for (int i = 0; i < result.Count; i++)
@@ -69,8 +77,35 @@ namespace Kliensalkalmazas_AzMintTavaly
             }
             
 
-            utazasokDGV.Rows.Clear();
-            utazasokDGV.Refresh();
+            UtazasListaz();
+
+        }
+
+        private void add_button_Click(object sender, EventArgs e)
+        {
+            UjUtazasForm.Globalproxy2 = Globalproxy;
+            UjUtazasForm ujtermekForm = new UjUtazasForm();
+            ujtermekForm.ShowDialog();
+            if(jelenlegiTermek != null) 
+            {
+                try
+                {
+
+                    //ApiResponse<ProductDTO> ujProdResponse = Globalproxy.ProductsCreate(jelenlegiTermek, null);
+                    //ProductDTO result = ujProdResponse.Content;
+                    //MessageBox.Show(result.Bvin);
+                    ApiResponse<ProductDTO> prodUpdateResponse = Globalproxy.ProductsUpdate(jelenlegiTermek);
+                    bvin = jelenlegiTermek.Bvin;
+                    string[] tordelt2 = kepFajlNev.Split('.');
+                    string ujkepnev = kepFajlNev.Replace('.' + tordelt2.Last(), "") + ";" + bvin.ToUpper() + '.' + tordelt2.Last();
+                    File.Copy(keput, "..\\..\\Kuldendo_kepek\\" + ujkepnev);
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+            }
             UtazasListaz();
 
         }

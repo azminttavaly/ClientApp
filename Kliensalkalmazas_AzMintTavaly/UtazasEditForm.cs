@@ -24,6 +24,7 @@ namespace Kliensalkalmazas_AzMintTavaly
         string keput;
         string bvin;
         bool kep_Valtozik;
+        ProductDTO globalTermek;
 
         private void kepvalaszto_button_Click(object sender, EventArgs e)
         {
@@ -50,15 +51,21 @@ namespace Kliensalkalmazas_AzMintTavaly
         {
             try
             {
-                tordelt[arIdx] = "SitePrice\":" + ar_numericUpDown.Value.ToString();
-                tordelt[nevIdx] = "ProductName\":\"" + nev_TextBox.Text+"\"";
-                tordelt[urlSlugIdx] = "UrlSlug\":\"" + URLSlug_TextBox.Text+"\"";
-                tordelt[leirasIdx] = "LongDescription\":\"" + leiras_textBox.Text + "\"";
+                globalTermek.SitePrice = ar_numericUpDown.Value;
+                globalTermek.ProductName = nev_TextBox.Text;
+                globalTermek.UrlSlug = URLSlug_TextBox.Text;
+                globalTermek.LongDescription = leiras_textBox.Text;
+                //tordelt[arIdx] = "SitePrice\":" + ar_numericUpDown.Value.ToString();
+                //tordelt[nevIdx] = "ProductName\":\"" + nev_TextBox.Text+"\"";
+                //tordelt[urlSlugIdx] = "UrlSlug\":\"" + URLSlug_TextBox.Text+"\"";
+                //tordelt[leirasIdx] = "LongDescription\":\"" + leiras_textBox.Text + "\"";
                 if (kep_Valtozik)
                 {
                     string kepFajlNev = keput_TextBox.Text.Split('\\').Last();
-                    tordelt[smallKepIdx] = "ImageFileSmall\":\"" + kepFajlNev +"\"";
-                    tordelt[medKepIdx] = "ImageFileMedium\":\"" + kepFajlNev + "\"";
+                    //tordelt[smallKepIdx] = "ImageFileSmall\":\"" + kepFajlNev +"\"";
+                    //tordelt[medKepIdx] = "ImageFileMedium\":\"" + kepFajlNev + "\"";
+                    globalTermek.ImageFileMedium = kepFajlNev;
+                    globalTermek.ImageFileSmall = kepFajlNev;
 
                     DirectoryInfo d = new DirectoryInfo("..\\..\\Kuldendo_kepek\\");
 
@@ -77,10 +84,10 @@ namespace Kliensalkalmazas_AzMintTavaly
                     string ujkepnev = kepFajlNev.Replace('.' + tordelt2.Last(),"") + ";" + bvin.ToUpper() + '.'+tordelt2.Last();
                     File.Copy(keput, "..\\..\\Kuldendo_kepek\\" + ujkepnev);
                 }
-                string uj_JSON = String.Join(",\"", tordelt);
-                ProductDTO frissTermek = JsonConvert.DeserializeObject<ProductDTO>(uj_JSON);
-                Form1.jelenlegiTermek = frissTermek;
-
+                //string uj_JSON = String.Join(",\"", tordelt);
+                //ProductDTO frissTermek = JsonConvert.DeserializeObject<ProductDTO>(uj_JSON);
+                //Form1.jelenlegiTermek = frissTermek;
+                Form1.jelenlegiTermek = globalTermek;
                 this.Close();
             }
             catch (Exception ex)
@@ -99,54 +106,60 @@ namespace Kliensalkalmazas_AzMintTavaly
         public UtazasEditForm(ProductDTO termek)
         {
             InitializeComponent();
-            OG_JSON = JsonConvert.SerializeObject(termek);
-            string JSON2 = OG_JSON.Replace(",\"", "␟");
-            tordelt = JSON2.Split('␟');
-            
-            for (int i = 0; i < tordelt.Length; i++)
-            {
+            globalTermek = termek;
+            ar_numericUpDown.Value = globalTermek.SitePrice;
+            nev_TextBox.Text = globalTermek.ProductName;
+            URLSlug_TextBox.Text = globalTermek.UrlSlug;
+            leiras_textBox.Text = globalTermek.LongDescription;
+            bvin = globalTermek.Bvin;
+            //OG_JSON = JsonConvert.SerializeObject(termek);
+            //string JSON2 = OG_JSON.Replace(",\"", "␟");
+            //tordelt = JSON2.Split('␟');
 
-                if (tordelt[i].Contains("SitePrice\":"))
-                {
-                    ar_numericUpDown.Value = Convert.ToInt32(tordelt[i].Split(':')[1].Split('.')[0].Trim());
-                    arIdx = i;
-                }
+            //for (int i = 0; i < tordelt.Length; i++)
+            //{
 
-                if (tordelt[i].Contains("ProductName\":"))
-                {
-                    nev_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':',"").Replace("\"", "");
-                    nevIdx = i;
-                }
+            //    if (tordelt[i].Contains("SitePrice\":"))
+            //    {
+            //        ar_numericUpDown.Value = Convert.ToInt32(tordelt[i].Split(':')[1].Split('.')[0].Trim());
+            //        arIdx = i;
+            //    }
 
-                if (tordelt[i].Contains("UrlSlug\":"))
-                {
-                    URLSlug_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
-                    urlSlugIdx = i;
-                }
+            //    if (tordelt[i].Contains("ProductName\":"))
+            //    {
+            //        nev_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':',"").Replace("\"", "");
+            //        nevIdx = i;
+            //    }
 
-                if (tordelt[i].Contains("LongDescription\":"))
-                {
-                    leiras_textBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
-                    leirasIdx = i;
-                }
+            //    if (tordelt[i].Contains("UrlSlug\":"))
+            //    {
+            //        URLSlug_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
+            //        urlSlugIdx = i;
+            //    }
 
-                if (tordelt[i].Contains("ImageFileSmall\":"))
-                {
-                    keput_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
-                    smallKepIdx = i;
-                }
+            //    if (tordelt[i].Contains("LongDescription\":"))
+            //    {
+            //        leiras_textBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
+            //        leirasIdx = i;
+            //    }
 
-                if (tordelt[i].Contains("ImageFileMedium\":"))
-                {
-                    medKepIdx = i;
-                }
+            //    if (tordelt[i].Contains("ImageFileSmall\":"))
+            //    {
+            //        keput_TextBox.Text = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
+            //        smallKepIdx = i;
+            //    }
 
-                if (tordelt[i].Contains("Bvin\":"))
-                {
-                    bvin = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
-                }
+            //    if (tordelt[i].Contains("ImageFileMedium\":"))
+            //    {
+            //        medKepIdx = i;
+            //    }
 
-            }
+            //    if (tordelt[i].Contains("Bvin\":"))
+            //    {
+            //        bvin = tordelt[i].Replace(tordelt[i].Split(':')[0] + ':', "").Replace("\"", "");
+            //    }
+
+            //}
 
         }
     }
