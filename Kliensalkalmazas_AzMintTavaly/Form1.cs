@@ -94,8 +94,8 @@ namespace Kliensalkalmazas_AzMintTavaly
                     //ApiResponse<ProductDTO> ujProdResponse = Globalproxy.ProductsCreate(jelenlegiTermek, null);
                     //ProductDTO result = ujProdResponse.Content;
                     //MessageBox.Show(result.Bvin);
-                    ApiResponse<ProductDTO> prodUpdateResponse = Globalproxy.ProductsUpdate(jelenlegiTermek);
-                    bvin = jelenlegiTermek.Bvin;
+                    ApiResponse<ProductDTO> prodUpdateResponse = Globalproxy.ProductsCreate(jelenlegiTermek,null);
+                    bvin = prodUpdateResponse.Content.Bvin;
                     string[] tordelt2 = kepFajlNev.Split('.');
                     string ujkepnev = kepFajlNev.Replace('.' + tordelt2.Last(), "") + ";" + bvin.ToUpper() + '.' + tordelt2.Last();
                     File.Copy(keput, "..\\..\\Kuldendo_kepek\\" + ujkepnev);

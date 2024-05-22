@@ -12,6 +12,7 @@ using Hotcakes.CommerceDTO;
 using Hotcakes.CommerceDTO.v1;
 using Hotcakes.CommerceDTO.v1.Catalog;
 using Hotcakes.CommerceDTO.v1.Client;
+using Hotcakes.Web;
 
 namespace Kliensalkalmazas_AzMintTavaly
 {
@@ -77,15 +78,18 @@ namespace Kliensalkalmazas_AzMintTavaly
                 product.StoreId = 1;
                 product.ImageFileMedium = kepFajlNev;
                 product.ImageFileSmall = kepFajlNev;
+                product.Sku = URLSlug_TextBox.Text;
+                //ApiResponse<ProductDTO> ujProdResponse = Form1.Globalproxy.ProductsCreate(product, null);
+                //ProductDTO ujproduct = ujProdResponse.Content;
 
-                ApiResponse<ProductDTO> ujProdResponse = Form1.Globalproxy.ProductsCreate(product, null);
-                ProductDTO ujproduct = ujProdResponse.Content;
+               //MessageBox.Show(ujProdResponse.ToString());
 
-                Form1.jelenlegiTermek = ujproduct;
+                Form1.jelenlegiTermek = product;
                 Form1.keput = keput;
                 Form1.kepFajlNev = kepFajlNev;
                 this.Close();
             }
+
             catch (Exception ex)
             {
 
